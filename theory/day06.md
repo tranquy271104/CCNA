@@ -1,34 +1,46 @@
-# 📔 Day 06: Tổng Quan Các Giao Thức Mạng Tiêu Biểu (DHCP, DNS, HTTP/HTTPS)
+# 📔 Day 06: Mô Hình OSI (P2) - Transport & Network Layer
 
-## 🔌 1. Giao Thức Cấp Phát IP Tự Động - DHCP (Dynamic Host Configuration Protocol)
-* **Khái niệm:** Là giao thức tự động cấu hình và cấp phát địa chỉ IP, Subnet Mask, Default Gateway và DNS Server cho các thiết bị trong mạng (PC, Laptop, Điện thoại...).
-* **Lợi ích:** Tiết kiệm thời gian cấu hình thủ công cho quản trị viên, tránh việc cấu hình sai hoặc trùng lặp IP gây xung đột (IP Conflict).
-* **Cơ chế hoạt động:** Hoạt động theo mô hình Client - Server và sử dụng giao thức **UDP** ở Layer 4 với 2 cổng:
-  * Port `67`: Dành cho DHCP Server.
-  * Port `68`: Dành cho DHCP Client.
+## 🚚 1. Layer 4 - Transport Layer (Tiếp tục)
+Tầng giao vận chịu trách nhiệm về cơ chế truyền tải gói tin cho các dịch vụ (Web, Mail, Video trực tuyến, Chat...). Tầng này phân chia thành 2 giao thức đối nghịch nhau:
 
-### 🔄 Quy trình bắt tay 4 bước DHCP (DORA Process)
-Khi một máy tính kết nối vào mạng, nó sẽ tìm kiếm Server và lấy IP qua 4 bước tuần tự:
-1. **D - Discover (Phát hiện):** Client gửi gói tin Broadcast (đến tất cả thiết bị) để tìm xem trong mạng có DHCP Server nào không.
-2. **O - Offer (Đề nghị):** DHCP Server nhận được gói tin, lựa chọn một địa chỉ IP còn trống trong kho và gửi gói tin Unicast (hoặc Broadcast tùy cấu hình) để đề nghị cấp IP này cho Client.
-3. **R - Request (Yêu cầu):** Client nhận được lời mời, nó phản hồi lại bằng gói tin Broadcast để chính thức thông báo: "Tôi đồng ý lấy địa chỉ IP này từ Server".
-4. **A - Acknowledge (Xác nhận):** Server gửi gói tin Unicast xác nhận, chính thức cho phép Client thuê địa chỉ IP đó và bắt đầu sử dụng.
+### A. Giao thức TCP (Transmission Control Protocol)
+* **Cơ chế:** Thiết lập kết nối trước khi truyền dữ liệu. Nếu thiết lập kết nối thành công thì mới tiến hành truyền dữ liệu, không thiết lập được thì không truyền.
+* **Đặc điểm nổi bật:**
+  * Đảm bảo tính toàn vẹn của dữ liệu tuyệt đối.
+  * Có cơ chế đánh số thứ tự (stt) cho từng gói tin để bên nhận sắp xếp lại đúng vị trí.
+  * Có cơ chế truyền tải lại gói tin nếu trong quá trình vận chuyển bị rơi rớt hoặc lỗi.
 
----
-
-## 📑 2. Giao Thức Phân Giải Tên Miền - DNS (Domain Name System)
-* **Khái niệm:** Là hệ thống dịch thuật trong mạng Internet, chịu trách nhiệm chuyển đổi từ **Tên miền** (dễ nhớ cho con người) sang **Địa chỉ IP** (để máy tính hiểu và định tuyến).
-  * *Ví dụ:* Khi bạn gõ tên miền `google.com`, DNS sẽ dịch thành địa chỉ IP `8.8.8.8` hoặc `172.217.24.14`.
-* **Cơ chế hoạt động:** Sử dụng giao thức **UDP** trên Port **`53`**.
+### B. Giao thức UDP (User Datagram Protocol)
+* **Ứng dụng thực tế:** Thường dùng cho các lưu lượng truyền tải thời gian thực như **Video Call, Voice** (`Realtime`).
+* **Đặc điểm:**
+  * **KHÔNG** thiết lập kết nối trước khi truyền.
+  * **KHÔNG** có cơ chế đánh số thứ tự (stt) cho gói tin.
+  * **KHÔNG** có cơ chế truyền tải lại gói tin bị mất.
+* **Hệ quả:** Không thể đảm bảo tính toàn vẹn của dữ liệu (gây ra hiện tượng thỉnh thoảng giật hình, vấp tiếng nhẹ).
+* **Ưu điểm cốt lõi:** Tốc độ truyền tải dữ liệu nhanh hơn giao thức TCP rất nhiều do giảm thiểu được các gói tin kiểm tra thủ tục.
 
 ---
 
-## 🌐 3. Giao Thức Duyệt Web - HTTP & HTTPS (Hypertext Transfer Protocol)
-* **HTTP:**
-  * Là giao thức truyền tải văn bản siêu văn bản thô để hiển thị trang web.
-  * Hoạt động dựa trên giao thức **TCP** bảo đảm an toàn dữ liệu trên Port **`80`**.
-  * **Nhược điểm:** Dữ liệu truyền đi không được mã hóa (Clear-text), rất dễ bị hacker chặn bắt và đọc trộm thông tin tài khoản.
-* **HTTPS (HTTP Secure):**
-  * Phiên bản nâng cấp bảo mật của HTTP, sử dụng thêm các chứng chỉ mã hóa dữ liệu (SSL/TLS).
-  * Hoạt động dựa trên giao thức **TCP** trên Port **`443`**.
-  * **Ưu điểm:** Toàn bộ dòng dữ liệu truyền đi giữa máy tính và máy chủ web đều được mã hóa, bảo mật tuyệt đối thông tin người dùng.
+## 🌐 2. Layer 3 - Network Layer
+Tầng mạng chịu trách nhiệm định hướng dòng dữ liệu đi qua các phân đoạn mạng khác nhau với 2 chức năng cốt lõi:
+* **Định tuyến (Routing):** Thực hiện tìm đường đi và xác định đường đi tối ưu nhất để đưa gói tin tới đích.
+* **Gán địa chỉ IP (Logical Addressing):** Cấp phát địa chỉ logic định danh cho thiết bị trong mạng.
+
+---
+
+## 🔗 3. Layer 2 - Data Link Layer
+Tầng liên kết dữ liệu xử lý dòng dữ liệu trong phạm vi nội bộ:
+* **Chức năng chính:** Truyền tải dữ liệu trong phạm vi hệ thống mạng nội bộ (LAN).
+* **Kiểm tra lỗi gói tin:** Thực hiện kiểm tra gói tin trước khi chính thức đẩy xuống môi trường truyền dẫn vật lý.
+
+---
+
+## 🔌 4. Layer 1 - Physical Layer
+* **Chức năng:** Chịu trách nhiệm truyền dẫn dòng dữ liệu thô qua các môi trường vật lý.
+
+---
+
+## 📦 5. Quá Trình Đóng Gói Dữ Liệu (Data Encapsulation)
+* **Khái niệm:** Là quá trình đóng gói và gắn thêm các thông tin tiêu đề (Header) vào gói tin khi dịch chuyển tuần tự từ tầng trên xuống tầng dưới (**từ Layer 7 $\rightarrow$ Layer 2**).
+* **Quá trình tại Source (Nguồn):** Thiết bị gửi sẽ trực tiếp thực hiện quá trình đóng gói Encapsulation này.
+* **Vai trò của L2 (Frame Trailer):** Tại tầng Data Link, hệ thống sẽ chèn thêm một đoạn mã kiểm tra lỗi gọi là `Frame Trailer` ở đuôi gói tin để thực hiện check lỗi toàn bộ dữ liệu trước khi đẩy xuống Layer 1 phát đi.
